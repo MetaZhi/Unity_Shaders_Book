@@ -9,23 +9,23 @@
 		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "DisableBatching"="True"}
 		
 		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+			Tags { "LightMode"="UniversalForward" }
 			
 			ZWrite Off
 			Blend SrcAlpha OneMinusSrcAlpha
 			Cull Off
 		
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
 			#pragma fragment frag
 			
-			#include "Lighting.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			fixed4 _Color;
-			fixed _VerticalBillboarding;
+			half4 _Color;
+			half _VerticalBillboarding;
 			
 			struct a2v {
 				float4 vertex : POSITION;
@@ -40,15 +40,15 @@
 			v2f vert (a2v v) {
 				v2f o;
 				
-				// Suppose the center in object space is fixed
+				// Suppose the center in object space is half
 				float3 center = float3(0, 0, 0);
 				float3 viewer = mul(unity_WorldToObject,float4(_WorldSpaceCameraPos, 1));
 				
 				float3 normalDir = viewer - center;
 				// If _VerticalBillboarding equals 1, we use the desired view dir as the normal dir
-				// Which means the normal dir is fixed
+				// Which means the normal dir is half
 				// Or if _VerticalBillboarding equals 0, the y of normal is 0
-				// Which means the up dir is fixed
+				// Which means the up dir is half
 				normalDir.y =normalDir.y * _VerticalBillboarding;
 				normalDir = normalize(normalDir);
 				// Get the approximate up dir
@@ -61,20 +61,20 @@
 				float3 centerOffs = v.vertex.xyz - center;
 				float3 localPos = center + rightDir * centerOffs.x + upDir * centerOffs.y + normalDir * centerOffs.z;
               
-				o.pos = UnityObjectToClipPos(float4(localPos, 1));
+				o.pos = TransformObjectToHClip(float4(localPos, 1));
 				o.uv = TRANSFORM_TEX(v.texcoord,_MainTex);
 
 				return o;
 			}
 			
-			fixed4 frag (v2f i) : SV_Target {
-				fixed4 c = tex2D (_MainTex, i.uv);
+			half4 frag (v2f i) : SV_Target {
+				half4 c = tex2D (_MainTex, i.uv);
 				c.rgb *= _Color.rgb;
 				
 				return c;
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 	} 
 	FallBack "Transparent/VertexLit"

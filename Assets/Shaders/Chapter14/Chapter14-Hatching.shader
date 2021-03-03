@@ -21,21 +21,21 @@ Shader "Unity Shaders Book/Chapter 14/Hatching" {
 		UsePass "Unity Shaders Book/Chapter 14/Toon Shading/OUTLINE"
 		
 		Pass {
-			Tags { "LightMode"="ForwardBase" }
+			Tags { "LightMode"="UniversalForward" }
 			
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
 			#pragma fragment frag 
 			
 			#pragma multi_compile_fwdbase
 			
-			#include "UnityCG.cginc"
-			#include "Lighting.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "AutoLight.cginc"
 			#include "UnityShaderVariables.cginc"
 			
-			fixed4 _Color;
+			half4 _Color;
 			float _TileFactor;
 			sampler2D _Hatch0;
 			sampler2D _Hatch1;
@@ -54,8 +54,8 @@ Shader "Unity Shaders Book/Chapter 14/Hatching" {
 			struct v2f {
 				float4 pos : SV_POSITION;
 				float2 uv : TEXCOORD0;
-				fixed3 hatchWeights0 : TEXCOORD1;
-				fixed3 hatchWeights1 : TEXCOORD2;
+				half3 hatchWeights0 : TEXCOORD1;
+				half3 hatchWeights1 : TEXCOORD2;
 				float3 worldPos : TEXCOORD3;
 				SHADOW_COORDS(4)
 			};
@@ -63,16 +63,16 @@ Shader "Unity Shaders Book/Chapter 14/Hatching" {
 			v2f vert(a2v v) {
 				v2f o;
 				
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.pos = TransformObjectToHClip(v.vertex);
 				
 				o.uv = v.texcoord.xy * _TileFactor;
 				
-				fixed3 worldLightDir = normalize(WorldSpaceLightDir(v.vertex));
-				fixed3 worldNormal = UnityObjectToWorldNormal(v.normal);
-				fixed diff = max(0, dot(worldLightDir, worldNormal));
+				half3 worldLightDir = normalize(WorldSpaceLightDir(v.vertex));
+				half3 worldNormal = TransformObjectToWorldNormal(v.normal);
+				half diff = max(0, dot(worldLightDir, worldNormal));
 				
-				o.hatchWeights0 = fixed3(0, 0, 0);
-				o.hatchWeights1 = fixed3(0, 0, 0);
+				o.hatchWeights0 = half3(0, 0, 0);
+				o.hatchWeights1 = half3(0, 0, 0);
 				
 				float hatchFactor = diff * 7.0;
 				
@@ -104,24 +104,24 @@ Shader "Unity Shaders Book/Chapter 14/Hatching" {
 				return o; 
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {			
-				fixed4 hatchTex0 = tex2D(_Hatch0, i.uv) * i.hatchWeights0.x;
-				fixed4 hatchTex1 = tex2D(_Hatch1, i.uv) * i.hatchWeights0.y;
-				fixed4 hatchTex2 = tex2D(_Hatch2, i.uv) * i.hatchWeights0.z;
-				fixed4 hatchTex3 = tex2D(_Hatch3, i.uv) * i.hatchWeights1.x;
-				fixed4 hatchTex4 = tex2D(_Hatch4, i.uv) * i.hatchWeights1.y;
-				fixed4 hatchTex5 = tex2D(_Hatch5, i.uv) * i.hatchWeights1.z;
-				fixed4 whiteColor = fixed4(1, 1, 1, 1) * (1 - i.hatchWeights0.x - i.hatchWeights0.y - i.hatchWeights0.z - 
+			half4 frag(v2f i) : SV_Target {			
+				half4 hatchTex0 = tex2D(_Hatch0, i.uv) * i.hatchWeights0.x;
+				half4 hatchTex1 = tex2D(_Hatch1, i.uv) * i.hatchWeights0.y;
+				half4 hatchTex2 = tex2D(_Hatch2, i.uv) * i.hatchWeights0.z;
+				half4 hatchTex3 = tex2D(_Hatch3, i.uv) * i.hatchWeights1.x;
+				half4 hatchTex4 = tex2D(_Hatch4, i.uv) * i.hatchWeights1.y;
+				half4 hatchTex5 = tex2D(_Hatch5, i.uv) * i.hatchWeights1.z;
+				half4 whiteColor = half4(1, 1, 1, 1) * (1 - i.hatchWeights0.x - i.hatchWeights0.y - i.hatchWeights0.z - 
 							i.hatchWeights1.x - i.hatchWeights1.y - i.hatchWeights1.z);
 				
-				fixed4 hatchColor = hatchTex0 + hatchTex1 + hatchTex2 + hatchTex3 + hatchTex4 + hatchTex5 + whiteColor;
+				half4 hatchColor = hatchTex0 + hatchTex1 + hatchTex2 + hatchTex3 + hatchTex4 + hatchTex5 + whiteColor;
 				
 				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
 								
-				return fixed4(hatchColor.rgb * _Color.rgb * atten, 1.0);
+				return half4(hatchColor.rgb * _Color.rgb * atten, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 	}
 	FallBack "Diffuse"

@@ -9,18 +9,18 @@ Shader "Unity Shaders Book/Chapter 12/Edge Detection" {
 		Pass {  
 			ZTest Always Cull Off ZWrite Off
 			
-			CGPROGRAM
+			HLSLPROGRAM
 			
-			#include "UnityCG.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
 			#pragma vertex vert  
 			#pragma fragment fragSobel
 			
 			sampler2D _MainTex;  
 			uniform half4 _MainTex_TexelSize;
-			fixed _EdgeOnly;
-			fixed4 _EdgeColor;
-			fixed4 _BackgroundColor;
+			half _EdgeOnly;
+			half4 _EdgeColor;
+			half4 _BackgroundColor;
 			
 			struct v2f {
 				float4 pos : SV_POSITION;
@@ -29,7 +29,7 @@ Shader "Unity Shaders Book/Chapter 12/Edge Detection" {
 			  
 			v2f vert(appdata_img v) {
 				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.pos = TransformObjectToHClip(v.vertex);
 				
 				half2 uv = v.texcoord;
 				
@@ -46,7 +46,7 @@ Shader "Unity Shaders Book/Chapter 12/Edge Detection" {
 				return o;
 			}
 			
-			fixed luminance(fixed4 color) {
+			half luminance(half4 color) {
 				return  0.2125 * color.r + 0.7154 * color.g + 0.0721 * color.b; 
 			}
 			
@@ -72,15 +72,15 @@ Shader "Unity Shaders Book/Chapter 12/Edge Detection" {
 				return edge;
 			}
 			
-			fixed4 fragSobel(v2f i) : SV_Target {
+			half4 fragSobel(v2f i) : SV_Target {
 				half edge = Sobel(i);
 				
-				fixed4 withEdgeColor = lerp(_EdgeColor, tex2D(_MainTex, i.uv[4]), edge);
-				fixed4 onlyEdgeColor = lerp(_EdgeColor, _BackgroundColor, edge);
+				half4 withEdgeColor = lerp(_EdgeColor, tex2D(_MainTex, i.uv[4]), edge);
+				half4 onlyEdgeColor = lerp(_EdgeColor, _BackgroundColor, edge);
 				return lerp(withEdgeColor, onlyEdgeColor, _EdgeOnly);
  			}
 			
-			ENDCG
+			ENDHLSL
 		} 
 	}
 	FallBack Off

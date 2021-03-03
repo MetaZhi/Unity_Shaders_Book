@@ -12,13 +12,13 @@
 		Tags { "RenderType"="Opaque" "Queue"="Geometry"}
 		
 		Pass {
-			Tags { "LightMode"="ForwardBase" }
+			Tags { "LightMode"="UniversalForward" }
 
 			Cull Off
 			
-			CGPROGRAM
+			HLSLPROGRAM
 			
-			#include "Lighting.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "AutoLight.cginc"
 			
 			#pragma multi_compile_fwdbase
@@ -26,12 +26,12 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			
-			fixed _BurnAmount;
-			fixed _LineWidth;
+			half _BurnAmount;
+			half _LineWidth;
 			sampler2D _MainTex;
 			sampler2D _BumpMap;
-			fixed4 _BurnFirstColor;
-			fixed4 _BurnSecondColor;
+			half4 _BurnFirstColor;
+			half4 _BurnSecondColor;
 			sampler2D _BurnMap;
 			
 			float4 _MainTex_ST;
@@ -57,7 +57,7 @@
 			
 			v2f vert(a2v v) {
 				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.pos = TransformObjectToHClip(v.vertex);
 				
 				o.uvMainTex = TRANSFORM_TEX(v.texcoord, _MainTex);
 				o.uvBumpMap = TRANSFORM_TEX(v.texcoord, _BumpMap);
@@ -73,47 +73,47 @@
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-				fixed3 burn = tex2D(_BurnMap, i.uvBurnMap).rgb;
+			half4 frag(v2f i) : SV_Target {
+				half3 burn = tex2D(_BurnMap, i.uvBurnMap).rgb;
 				
 				clip(burn.r - _BurnAmount);
 				
 				float3 tangentLightDir = normalize(i.lightDir);
-				fixed3 tangentNormal = UnpackNormal(tex2D(_BumpMap, i.uvBumpMap));
+				half3 tangentNormal = UnpackNormal(tex2D(_BumpMap, i.uvBumpMap));
 				
-				fixed3 albedo = tex2D(_MainTex, i.uvMainTex).rgb;
+				half3 albedo = tex2D(_MainTex, i.uvMainTex).rgb;
 				
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
 				
-				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(tangentNormal, tangentLightDir));
+				half3 diffuse = _MainLightColor.rgb * albedo * max(0, dot(tangentNormal, tangentLightDir));
 
-				fixed t = 1 - smoothstep(0.0, _LineWidth, burn.r - _BurnAmount);
-				fixed3 burnColor = lerp(_BurnFirstColor, _BurnSecondColor, t);
+				half t = 1 - smoothstep(0.0, _LineWidth, burn.r - _BurnAmount);
+				half3 burnColor = lerp(_BurnFirstColor, _BurnSecondColor, t);
 				burnColor = pow(burnColor, 5);
 				
 				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
-				fixed3 finalColor = lerp(ambient + diffuse * atten, burnColor, t * step(0.0001, _BurnAmount));
+				half3 finalColor = lerp(ambient + diffuse * atten, burnColor, t * step(0.0001, _BurnAmount));
 				
-				return fixed4(finalColor, 1);
+				return half4(finalColor, 1);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 		
 		// Pass to render object as a shadow caster
 		Pass {
 			Tags { "LightMode" = "ShadowCaster" }
 			
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
 			#pragma fragment frag
 			
 			#pragma multi_compile_shadowcaster
 			
-			#include "UnityCG.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
-			fixed _BurnAmount;
+			half _BurnAmount;
 			sampler2D _BurnMap;
 			float4 _BurnMap_ST;
 			
@@ -132,14 +132,14 @@
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-				fixed3 burn = tex2D(_BurnMap, i.uvBurnMap).rgb;
+			half4 frag(v2f i) : SV_Target {
+				half3 burn = tex2D(_BurnMap, i.uvBurnMap).rgb;
 				
 				clip(burn.r - _BurnAmount);
 				
 				SHADOW_CASTER_FRAGMENT(i)
 			}
-			ENDCG
+			ENDHLSL
 		}
 	}
 	FallBack "Diffuse"

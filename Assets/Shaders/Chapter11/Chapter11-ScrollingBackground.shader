@@ -10,14 +10,14 @@
 		Tags { "RenderType"="Opaque" "Queue"="Geometry"}
 		
 		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+			Tags { "LightMode"="UniversalForward" }
 			
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
 			#pragma fragment frag
 			
-			#include "UnityCG.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
 			sampler2D _MainTex;
 			sampler2D _DetailTex;
@@ -39,7 +39,7 @@
 			
 			v2f vert (a2v v) {
 				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.pos = TransformObjectToHClip(v.vertex);
 				
 				o.uv.xy = TRANSFORM_TEX(v.texcoord, _MainTex) + frac(float2(_ScrollX, 0.0) * _Time.y);
 				o.uv.zw = TRANSFORM_TEX(v.texcoord, _DetailTex) + frac(float2(_Scroll2X, 0.0) * _Time.y);
@@ -47,17 +47,17 @@
 				return o;
 			}
 			
-			fixed4 frag (v2f i) : SV_Target {
-				fixed4 firstLayer = tex2D(_MainTex, i.uv.xy);
-				fixed4 secondLayer = tex2D(_DetailTex, i.uv.zw);
+			half4 frag (v2f i) : SV_Target {
+				half4 firstLayer = tex2D(_MainTex, i.uv.xy);
+				half4 secondLayer = tex2D(_DetailTex, i.uv.zw);
 				
-				fixed4 c = lerp(firstLayer, secondLayer, secondLayer.a);
+				half4 c = lerp(firstLayer, secondLayer, secondLayer.a);
 				c.rgb *= _Multiplier;
 				
 				return c;
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 	}
 	FallBack "VertexLit"

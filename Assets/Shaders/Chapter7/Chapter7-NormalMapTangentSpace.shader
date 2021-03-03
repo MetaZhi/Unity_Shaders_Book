@@ -9,22 +9,22 @@ Shader "Unity Shaders Book/Chapter 7/Normal Map In Tangent Space" {
 	}
 	SubShader {
 		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+			Tags { "LightMode"="UniversalForward" }
 		
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
 			#pragma fragment frag
 			
-			#include "Lighting.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
-			fixed4 _Color;
+			half4 _Color;
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
 			sampler2D _BumpMap;
 			float4 _BumpMap_ST;
 			float _BumpScale;
-			fixed4 _Specular;
+			half4 _Specular;
 			float _Gloss;
 			
 			struct a2v {
@@ -75,7 +75,7 @@ Shader "Unity Shaders Book/Chapter 7/Normal Map In Tangent Space" {
 
 			v2f vert(a2v v) {
 				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.pos = TransformObjectToHClip(v.vertex);
 				
 				o.uv.xy = v.texcoord.xy * _MainTex_ST.xy + _MainTex_ST.zw;
 				o.uv.zw = v.texcoord.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
@@ -85,9 +85,9 @@ Shader "Unity Shaders Book/Chapter 7/Normal Map In Tangent Space" {
 				///
 
 				// Construct a matrix that transforms a point/vector from tangent space to world space
-				fixed3 worldNormal = UnityObjectToWorldNormal(v.normal);  
-				fixed3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);  
-				fixed3 worldBinormal = cross(worldNormal, worldTangent) * v.tangent.w; 
+				half3 worldNormal = TransformObjectToWorldNormal(v.normal);  
+				half3 worldTangent = TransformObjectToWorldDir(v.tangent.xyz);  
+				half3 worldBinormal = cross(worldNormal, worldTangent) * v.tangent.w; 
 
 				/*
 				float4x4 tangentToWorld = float4x4(worldTangent.x, worldBinormal.x, worldNormal.x, 0.0,
@@ -102,8 +102,8 @@ Shader "Unity Shaders Book/Chapter 7/Normal Map In Tangent Space" {
 				float3x3 worldToTangent = float3x3(worldTangent, worldBinormal, worldNormal);
 
 				// Transform the light and view dir from world space to tangent space
-				o.lightDir = mul(worldToTangent, WorldSpaceLightDir(v.vertex));
-				o.viewDir = mul(worldToTangent, WorldSpaceViewDir(v.vertex));
+				o.lightDir = mul(worldToTangent, _MainLightPosition.xyz - TransformObjectToWorld(v.vertex));
+				o.viewDir = mul(worldToTangent, GetCameraPositionWS() - TransformObjectToWorld(v.vertex));
 
 				///
 				/// Note that the code below can only handle uniform scales, not including non-uniform scales
@@ -124,13 +124,13 @@ Shader "Unity Shaders Book/Chapter 7/Normal Map In Tangent Space" {
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {				
-				fixed3 tangentLightDir = normalize(i.lightDir);
-				fixed3 tangentViewDir = normalize(i.viewDir);
+			half4 frag(v2f i) : SV_Target {				
+				half3 tangentLightDir = normalize(i.lightDir);
+				half3 tangentViewDir = normalize(i.viewDir);
 				
 				// Get the texel in the normal map
-				fixed4 packedNormal = tex2D(_BumpMap, i.uv.zw);
-				fixed3 tangentNormal;
+				half4 packedNormal = tex2D(_BumpMap, i.uv.zw);
+				half3 tangentNormal;
 				// If the texture is not marked as "Normal map"
 //				tangentNormal.xy = (packedNormal.xy * 2 - 1) * _BumpScale;
 //				tangentNormal.z = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));
@@ -140,19 +140,19 @@ Shader "Unity Shaders Book/Chapter 7/Normal Map In Tangent Space" {
 				tangentNormal.xy *= _BumpScale;
 				tangentNormal.z = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));
 				
-				fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;
+				half3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;
 				
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
 				
-				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(tangentNormal, tangentLightDir));
+				half3 diffuse = _MainLightColor.rgb * albedo * max(0, dot(tangentNormal, tangentLightDir));
 
-				fixed3 halfDir = normalize(tangentLightDir + tangentViewDir);
-				fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(tangentNormal, halfDir)), _Gloss);
+				half3 halfDir = normalize(tangentLightDir + tangentViewDir);
+				half3 specular = _MainLightColor.rgb * _Specular.rgb * pow(max(0, dot(tangentNormal, halfDir)), _Gloss);
 				
-				return fixed4(ambient + diffuse + specular, 1.0);
+				return half4(ambient + diffuse + specular, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 	} 
 	FallBack "Specular"

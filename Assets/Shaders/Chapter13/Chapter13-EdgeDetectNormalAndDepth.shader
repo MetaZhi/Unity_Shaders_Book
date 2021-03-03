@@ -10,13 +10,13 @@
 	SubShader {
 		CGINCLUDE
 		
-		#include "UnityCG.cginc"
+		#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 		
 		sampler2D _MainTex;
 		half4 _MainTex_TexelSize;
-		fixed _EdgeOnly;
-		fixed4 _EdgeColor;
-		fixed4 _BackgroundColor;
+		half _EdgeOnly;
+		half4 _EdgeColor;
+		half4 _BackgroundColor;
 		float _SampleDistance;
 		half4 _Sensitivity;
 		
@@ -29,7 +29,7 @@
 		  
 		v2f vert(appdata_img v) {
 			v2f o;
-			o.pos = UnityObjectToClipPos(v.vertex);
+			o.pos = TransformObjectToHClip(v.vertex);
 			
 			half2 uv = v.texcoord;
 			o.uv[0] = uv;
@@ -68,7 +68,7 @@
 			return isSameNormal * isSameDepth ? 1.0 : 0.0;
 		}
 		
-		fixed4 fragRobertsCrossDepthAndNormal(v2f i) : SV_Target {
+		half4 fragRobertsCrossDepthAndNormal(v2f i) : SV_Target {
 			half4 sample1 = tex2D(_CameraDepthNormalsTexture, i.uv[1]);
 			half4 sample2 = tex2D(_CameraDepthNormalsTexture, i.uv[2]);
 			half4 sample3 = tex2D(_CameraDepthNormalsTexture, i.uv[3]);
@@ -79,23 +79,23 @@
 			edge *= CheckSame(sample1, sample2);
 			edge *= CheckSame(sample3, sample4);
 			
-			fixed4 withEdgeColor = lerp(_EdgeColor, tex2D(_MainTex, i.uv[0]), edge);
-			fixed4 onlyEdgeColor = lerp(_EdgeColor, _BackgroundColor, edge);
+			half4 withEdgeColor = lerp(_EdgeColor, tex2D(_MainTex, i.uv[0]), edge);
+			half4 onlyEdgeColor = lerp(_EdgeColor, _BackgroundColor, edge);
 			
 			return lerp(withEdgeColor, onlyEdgeColor, _EdgeOnly);
 		}
 		
-		ENDCG
+		ENDHLSL
 		
 		Pass { 
 			ZTest Always Cull Off ZWrite Off
 			
-			CGPROGRAM      
+			HLSLPROGRAM      
 			
 			#pragma vertex vert  
 			#pragma fragment fragRobertsCrossDepthAndNormal
 			
-			ENDCG  
+			ENDHLSL  
 		}
 	} 
 	FallBack Off

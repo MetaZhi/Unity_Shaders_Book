@@ -8,22 +8,22 @@
 		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
 		
 		Pass {
-			Tags { "LightMode"="ForwardBase" }
+			Tags { "LightMode"="UniversalForward" }
 
 			ZWrite Off
 			Blend SrcAlpha OneMinusSrcAlpha
 			
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
 			#pragma fragment frag
 			
-			#include "Lighting.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
-			fixed4 _Color;
+			half4 _Color;
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			fixed _AlphaScale;
+			half _AlphaScale;
 			
 			struct a2v {
 				float4 vertex : POSITION;
@@ -40,9 +40,9 @@
 			
 			v2f vert(a2v v) {
 				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.pos = TransformObjectToHClip(v.vertex);
 				
-				o.worldNormal = UnityObjectToWorldNormal(v.normal);
+				o.worldNormal = TransformObjectToWorldNormal(v.normal);
 				
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
 				
@@ -51,22 +51,22 @@
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-				fixed3 worldNormal = normalize(i.worldNormal);
-				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+			half4 frag(v2f i) : SV_Target {
+				half3 worldNormal = normalize(i.worldNormal);
+				half3 worldLightDir = normalize(_MainLightPosition.xyz -(i.worldPos));
 				
-				fixed4 texColor = tex2D(_MainTex, i.uv);
+				half4 texColor = tex2D(_MainTex, i.uv);
 				
-				fixed3 albedo = texColor.rgb * _Color.rgb;
+				half3 albedo = texColor.rgb * _Color.rgb;
 				
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
 				
-				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+				half3 diffuse = _MainLightColor.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
 				
-				return fixed4(ambient + diffuse, texColor.a * _AlphaScale);
+				return half4(ambient + diffuse, texColor.a * _AlphaScale);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 	} 
 	FallBack "Transparent/VertexLit"

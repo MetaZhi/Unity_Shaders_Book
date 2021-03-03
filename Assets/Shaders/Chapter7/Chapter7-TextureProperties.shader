@@ -4,14 +4,14 @@
 	}
 	SubShader {
 		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+			Tags { "LightMode"="UniversalForward" }
 		
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#include "Lighting.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
@@ -29,20 +29,20 @@
 			v2f vert(a2v v) {
 			 	v2f o;
 			 	// Transform the vertex from object space to projection space
-			 	o.position = UnityObjectToClipPos(v.vertex);
+			 	o.position = TransformObjectToHClip(v.vertex);
 
 			 	o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 			 	
 			 	return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-				fixed4 c = tex2D(_MainTex, i.uv);
+			half4 frag(v2f i) : SV_Target {
+				half4 c = tex2D(_MainTex, i.uv);
 
-				return fixed4(c.rgb, 1.0);
+				return half4(c.rgb, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 	} 
 	FallBack "Diffuse"

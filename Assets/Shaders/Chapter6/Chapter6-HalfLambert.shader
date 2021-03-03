@@ -4,16 +4,16 @@
 	}
 	SubShader {
 		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+			Tags { "LightMode"="UniversalForward" }
 		
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
 			#pragma fragment frag
 			
-			#include "Lighting.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
-			fixed4 _Diffuse;
+			half4 _Diffuse;
 			
 			struct a2v {
 				float4 vertex : POSITION;
@@ -28,7 +28,7 @@
 			v2f vert(a2v v) {
 				v2f o;
 				// Transform the vertex from object space to projection space
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.pos = TransformObjectToHClip(v.vertex);
 				
 				// Transform the normal from object space to world space
 				o.worldNormal = mul(v.normal, (float3x3)unity_WorldToObject);
@@ -36,25 +36,25 @@
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
+			half4 frag(v2f i) : SV_Target {
 				// Get ambient term
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
 				
 				// Get the normal in world space
-				fixed3 worldNormal = normalize(i.worldNormal);
+				half3 worldNormal = normalize(i.worldNormal);
 				// Get the light direction in world space
-				fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
+				half3 worldLightDir = normalize(_MainLightPosition.xyz);
 				
 				// Compute diffuse term
-				fixed halfLambert = dot(worldNormal, worldLightDir) * 0.5 + 0.5;
-				fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * halfLambert;
+				half halfLambert = dot(worldNormal, worldLightDir) * 0.5 + 0.5;
+				half3 diffuse = _MainLightColor.rgb * _Diffuse.rgb * halfLambert;
 				
-				fixed3 color = ambient + diffuse;
+				half3 color = ambient + diffuse;
 				
-				return fixed4(color, 1.0);
+				return half4(color, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 	} 
 	FallBack "Diffuse"

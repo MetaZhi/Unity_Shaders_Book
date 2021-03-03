@@ -7,19 +7,19 @@
 	}
 	SubShader {
 		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+			Tags { "LightMode"="UniversalForward" }
 		
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
 			#pragma fragment frag
 
-			#include "Lighting.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
-			fixed4 _Color;
+			half4 _Color;
 			sampler2D _RampTex;
 			float4 _RampTex_ST;
-			fixed4 _Specular;
+			half4 _Specular;
 			float _Gloss;
 			
 			struct a2v {
@@ -37,9 +37,9 @@
 			
 			v2f vert(a2v v) {
 				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.pos = TransformObjectToHClip(v.vertex);
 				
-				o.worldNormal = UnityObjectToWorldNormal(v.normal);
+				o.worldNormal = TransformObjectToWorldNormal(v.normal);
 				
 				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
 				
@@ -48,26 +48,26 @@
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-				fixed3 worldNormal = normalize(i.worldNormal);
-				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+			half4 frag(v2f i) : SV_Target {
+				half3 worldNormal = normalize(i.worldNormal);
+				half3 worldLightDir = normalize(_MainLightPosition.xyz -(i.worldPos));
 				
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
 				
 				// Use the texture to sample the diffuse color
-				fixed halfLambert  = 0.5 * dot(worldNormal, worldLightDir) + 0.5;
-				fixed3 diffuseColor = tex2D(_RampTex, fixed2(halfLambert, halfLambert)).rgb * _Color.rgb;
+				half halfLambert  = 0.5 * dot(worldNormal, worldLightDir) + 0.5;
+				half3 diffuseColor = tex2D(_RampTex, half2(halfLambert, halfLambert)).rgb * _Color.rgb;
 				
-				fixed3 diffuse = _LightColor0.rgb * diffuseColor;
+				half3 diffuse = _MainLightColor.rgb * diffuseColor;
 				
-				fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
-				fixed3 halfDir = normalize(worldLightDir + viewDir);
-				fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
+				half3 viewDir = normalize(GetCameraPositionWS() - (i.worldPos));
+				half3 halfDir = normalize(worldLightDir + viewDir);
+				half3 specular = _MainLightColor.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
 				
-				return fixed4(ambient + diffuse + specular, 1.0);
+				return half4(ambient + diffuse + specular, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 	} 
 	FallBack "Specular"

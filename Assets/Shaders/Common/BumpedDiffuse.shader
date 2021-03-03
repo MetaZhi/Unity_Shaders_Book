@@ -8,19 +8,19 @@
 		Tags { "RenderType"="Opaque" "Queue"="Geometry"}
 
 		Pass { 
-			Tags { "LightMode"="ForwardBase" }
+			Tags { "LightMode"="UniversalForward" }
 		
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma multi_compile_fwdbase
 			
 			#pragma vertex vert
 			#pragma fragment frag
 			
-			#include "Lighting.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "AutoLight.cginc"
 			
-			fixed4 _Color;
+			half4 _Color;
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
 			sampler2D _BumpMap;
@@ -44,15 +44,15 @@
 			
 			v2f vert(a2v v) {
 				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.pos = TransformObjectToHClip(v.vertex);
 				
 				o.uv.xy = v.texcoord.xy * _MainTex_ST.xy + _MainTex_ST.zw;
 				o.uv.zw = v.texcoord.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
 				
 				float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;  
-				fixed3 worldNormal = UnityObjectToWorldNormal(v.normal);  
-				fixed3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);  
-				fixed3 worldBinormal = cross(worldNormal, worldTangent) * v.tangent.w; 
+				half3 worldNormal = TransformObjectToWorldNormal(v.normal);  
+				half3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);  
+				half3 worldBinormal = cross(worldNormal, worldTangent) * v.tangent.w; 
 				
 				o.TtoW0 = float4(worldTangent.x, worldBinormal.x, worldNormal.x, worldPos.x);
 				o.TtoW1 = float4(worldTangent.y, worldBinormal.y, worldNormal.y, worldPos.y);
@@ -63,26 +63,26 @@
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
+			half4 frag(v2f i) : SV_Target {
 				float3 worldPos = float3(i.TtoW0.w, i.TtoW1.w, i.TtoW2.w);
-				fixed3 lightDir = normalize(UnityWorldSpaceLightDir(worldPos));
-				fixed3 viewDir = normalize(UnityWorldSpaceViewDir(worldPos));
+				half3 lightDir = normalize(_MainLightPosition.xyz -(worldPos));
+				half3 viewDir = normalize(GetCameraPositionWS() - (worldPos));
 				
-				fixed3 bump = UnpackNormal(tex2D(_BumpMap, i.uv.zw));
+				half3 bump = UnpackNormal(tex2D(_BumpMap, i.uv.zw));
 				bump = normalize(half3(dot(i.TtoW0.xyz, bump), dot(i.TtoW1.xyz, bump), dot(i.TtoW2.xyz, bump)));
 				
-				fixed3 albedo = tex2D(_MainTex, i.uv.xy).rgb * _Color.rgb;
+				half3 albedo = tex2D(_MainTex, i.uv.xy).rgb * _Color.rgb;
 				
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
 			
-			 	fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(bump, lightDir));
+			 	half3 diffuse = _MainLightColor.rgb * albedo * max(0, dot(bump, lightDir));
 				
 				UNITY_LIGHT_ATTENUATION(atten, i, worldPos);
 				
-				return fixed4(ambient + diffuse * atten, 1.0);
+				return half4(ambient + diffuse * atten, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 		
 		Pass { 
@@ -90,7 +90,7 @@
 			
 			Blend One One
 		
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma multi_compile_fwdadd
 			// Use the line below to add shadows for point and spot lights
@@ -99,10 +99,10 @@
 			#pragma vertex vert
 			#pragma fragment frag
 			
-			#include "Lighting.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "AutoLight.cginc"
 			
-			fixed4 _Color;
+			half4 _Color;
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
 			sampler2D _BumpMap;
@@ -126,15 +126,15 @@
 			
 			v2f vert(a2v v) {
 				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.pos = TransformObjectToHClip(v.vertex);
 				
 				o.uv.xy = v.texcoord.xy * _MainTex_ST.xy + _MainTex_ST.zw;
 				o.uv.zw = v.texcoord.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
 				
 				float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;  
-				fixed3 worldNormal = UnityObjectToWorldNormal(v.normal);  
-				fixed3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);  
-				fixed3 worldBinormal = cross(worldNormal, worldTangent) * v.tangent.w; 
+				half3 worldNormal = TransformObjectToWorldNormal(v.normal);  
+				half3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);  
+				half3 worldBinormal = cross(worldNormal, worldTangent) * v.tangent.w; 
 				
 				o.TtoW0 = float4(worldTangent.x, worldBinormal.x, worldNormal.x, worldPos.x);
 				o.TtoW1 = float4(worldTangent.y, worldBinormal.y, worldNormal.y, worldPos.y);
@@ -145,24 +145,24 @@
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
+			half4 frag(v2f i) : SV_Target {
 				float3 worldPos = float3(i.TtoW0.w, i.TtoW1.w, i.TtoW2.w);
-				fixed3 lightDir = normalize(UnityWorldSpaceLightDir(worldPos));
-				fixed3 viewDir = normalize(UnityWorldSpaceViewDir(worldPos));
+				half3 lightDir = normalize(_MainLightPosition.xyz -(worldPos));
+				half3 viewDir = normalize(GetCameraPositionWS() - (worldPos));
 				
-				fixed3 bump = UnpackNormal(tex2D(_BumpMap, i.uv.zw));
+				half3 bump = UnpackNormal(tex2D(_BumpMap, i.uv.zw));
 				bump = normalize(half3(dot(i.TtoW0.xyz, bump), dot(i.TtoW1.xyz, bump), dot(i.TtoW2.xyz, bump)));
 				
-				fixed3 albedo = tex2D(_MainTex, i.uv.xy).rgb * _Color.rgb;
+				half3 albedo = tex2D(_MainTex, i.uv.xy).rgb * _Color.rgb;
 				
-			 	fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(bump, lightDir));
+			 	half3 diffuse = _MainLightColor.rgb * albedo * max(0, dot(bump, lightDir));
 				
 				UNITY_LIGHT_ATTENUATION(atten, i, worldPos);
 				
-				return fixed4(diffuse * atten, 1.0);
+				return half4(diffuse * atten, 1.0);
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 	} 
 	FallBack "Diffuse"

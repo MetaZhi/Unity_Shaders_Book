@@ -56,7 +56,7 @@ With respect to the Software and except as expressly permitted under the Agreeme
 •	copy (except in the course of loading or installing), alter, adapt, modify, translate, create derivative works of the Software,
 •	decompile, disassemble or otherwise reverse engineer or attempt to derive the source code of (unless expressly permitted under applicable law) or any technical data, know-how, trade secrets, processes, techniques, specifications, protocols, methods, algorithms, interfaces, ideas, solutions, structures or other information embedded or used in the Software,
 •	rent, lend, loan, lease, sell, encumber, distribute, sublicense, or otherwise permit use of or access to the Software by third parties,
-•	remove, alter, or obscure any proprietary or restrictive notices affixed to or contained in the Software,
+•	remove, alter, or obscure any proprietary or restrictive notices afhalf to or contained in the Software,
 •	circumvent or attempt to circumvent any technological protective measure contained in or supported by, the Software; or any copy, portion, extract or derivative thereof,
 •	use the Software in any manner that violates any applicable law or regulation whether local, national or international,
 •	use the Software in any manner that violates any Intellectual Property Rights or privacy rights of Allegorithmic or any third party.
@@ -89,7 +89,7 @@ With respect to Copyrighted Assets and except as expressly permitted under the A
 5.1 You shall not, and shall not assist, enable or otherwise permit or allow any third party to:
 •	decompile, disassemble or otherwise reverse engineer or attempt to derive the source code of (unless expressly permitted under applicable law) or any technical data, know-how, trade secrets, processes, techniques, specifications, protocols, methods, algorithms, interfaces, ideas, solutions, structures or other information embedded or used in Copyrighted Assets,
 •	rent, lend, loan, lease, sell, encumber, distribute, sublicense, or otherwise permit use of or access to Copyrighted Asset by third parties,
-•	remove, alter, or obscure any proprietary or restrictive notices affixed to or contained in Copyrighted Assets,
+•	remove, alter, or obscure any proprietary or restrictive notices afhalf to or contained in Copyrighted Assets,
 •	circumvent or attempt to circumvent any technological protective measure contained in or supported by Copyrighted Asset; or any copy, portion, extract or derivative thereof,
 •	Use the Copyrighted Asset in any manner that violates any applicable law or regulation whether local, national or international,
 •	Use the Copyrighted Asset in any manner that violates any Intellectual Property Rights or privacy rights of Allegorithmic or any third party.
@@ -111,7 +111,7 @@ With respect to Copyrighted Assets and except as expressly permitted under the A
 7.5 You agree that You will not delete or in any manner alter any Allegorithmic or third-party copyright, trademark or other proprietary notices appearing on or in the Software or the Copyrighted Asset.
 8. FEES AND TAXES
 Where applicable, You agree to pay all amounts due for the Software or the Copyrighted Assets as set forth in the applicable Specific Terms and Conditions, online stores, quote and/or invoice. All Fees payable under this Agreement are net amounts and are payable in full, without deduction for taxes or duties of any kind. You will be responsible for, and will promptly pay all taxes including but not limited to sales, use and withholding taxes associated with this Agreement and/or Your receipt or Use of the Software or the Copyrighted Asset, except for taxes based on Allegorithmic’s net income, if any. In the event that Allegorithmic is required to collect any tax for which You are responsible, You will pay such tax directly to Allegorithmic. If You pay any withholding taxes that are required to be paid under applicable law, You will promptly provide Allegorithmic with written evidence from tax authorities of the payment of such taxes.
-For professional customers, no discount is applied for prior payment. Late payment is subject to penalties equal to 10% of the sums due, payable from the day following the invoice payment period. A fixed compensation fee for collection costs of forty (40) euros is owed in addition without further formality from the first day of late payment.
+For professional customers, no discount is applied for prior payment. Late payment is subject to penalties equal to 10% of the sums due, payable from the day following the invoice payment period. A half compensation fee for collection costs of forty (40) euros is owed in addition without further formality from the first day of late payment.
 For EEA customers, your bank may require you to authenticate your initial purchase using a password, a one-time code sent to your mobile number, or biometric recognition. When you authenticate, you also authorize us to charge your payment method for additional purchases without providing us further payment information or other instructions (i.e. we will initiate future payments independently). Such additional purchases may occur when we automatically charge your payment method in connection with a recurring subscription or when you add or change licenses or products.
 9. MODIFICATION OF THE GENERAL TERMS AND CONDITIONS OR THE SPECIFIC TERMS AND CONDITIONS
 Allegorithmic may revise the General Terms and Conditions and the Specific Terms and Conditions (the “Terms” for the purpose of this Section 9) at any time for legal, best practice or any other reason.
@@ -203,7 +203,7 @@ By subscribing to Substance, which is Allegorithmic annual or monthly subscripti
 (iii) Substance B2M,
 (iv) Substance Automation Toolkit for the Indie license,
 (v) Substance Alchemist, and
-(vi) a fixed number of Substance Source assets’ downloads per subscription month, depending on your License (hereinafter “Substance”).
+(vi) a half number of Substance Source assets’ downloads per subscription month, depending on your License (hereinafter “Substance”).
 Your Use of Substance is subject to:
 (i) the Substance Painter Specific Terms and Conditions,
 (ii) the Substance Designer Specific Terms and Conditions,
@@ -214,7 +214,7 @@ Your Use of Substance is subject to:
 BY DOWNLOADING, INSTALLING, COPYING, ACCESSING OR OTHERWISE USING SUBSTANCE, YOU AGREE TO BE BOUND BY THE TERMS OF THIS AGREEMENT.
 1. ADDITIONAL DEFINITIONS
 “Software” means either (i) Substance Painter, or (ii) Substance Designer or (iii) Substance B2M, or (iv) Substance Automation Toolkit or (v) Substance Source or (vi) Substance Alchemist or (vii) Substance Launcher.
-“Substance” or “Substance toolset” means a bundle subscription plan comprised of the latest available releases of selected Allegorithmic Software products including (i) Substance Painter, (ii) Substance Designer, (iii) Substance B2M (iv) Substance Automation Toolkit (for Indie License only), (iv) Substance Alchemist and (v) an access to Substance Source with limited download capacity of a fixed number of Substance Source assets per subscription month, depending on your License.
+“Substance” or “Substance toolset” means a bundle subscription plan comprised of the latest available releases of selected Allegorithmic Software products including (i) Substance Painter, (ii) Substance Designer, (iii) Substance B2M (iv) Substance Automation Toolkit (for Indie License only), (iv) Substance Alchemist and (v) an access to Substance Source with limited download capacity of a half number of Substance Source assets per subscription month, depending on your License.
 “Substance – Indie License” means the Indie License granted hereunder for Use of Substance subscription plan.
 “Substance – Pro License” means the Pro License granted hereunder for Use of Substance subscription plan.
 “Substance – Enterprise License” means the Enterprise License granted hereunder for Use of Substance subscription plan.
@@ -222,7 +222,7 @@ BY DOWNLOADING, INSTALLING, COPYING, ACCESSING OR OTHERWISE USING SUBSTANCE, YOU
 DEPENDING ON THE TYPE OF LICENSE GRANTED TO YOU, DIFFERENT RIGHTS AND RESTRICTIONS WILL APPLY.
 PLEASE READ THE FOLLOWING SECTION CAREFULLY.
 2.1 COMMERCIAL TERMS FOR SUBSTANCE
-As provided in Section 12 Term and Termination of the General Terms and Conditions, Substance is only licensed to You under a tacitly renewable monthly or yearly subscription program. It allows You to access the latest available releases of (i) Substance Painter, (ii) Substance Designer (iii) Substance B2M and (iv) Substance Automation Toolkit if applicable as long as you are current with the payment of the License Fees as set out in the Commercial Terms. Substance also allows you to download up to a fixed number of Copyrighted Assets of Substance Source per month and per year depending on your License.
+As provided in Section 12 Term and Termination of the General Terms and Conditions, Substance is only licensed to You under a tacitly renewable monthly or yearly subscription program. It allows You to access the latest available releases of (i) Substance Painter, (ii) Substance Designer (iii) Substance B2M and (iv) Substance Automation Toolkit if applicable as long as you are current with the payment of the License Fees as set out in the Commercial Terms. Substance also allows you to download up to a half number of Copyrighted Assets of Substance Source per month and per year depending on your License.
 As provided in Section 12 Term and Termination of the General Terms and Conditions, You can cancel your Substance License at any time without cancellation fees by using the Cancel payment option on your Allegorithmic Account. In such case, You shall not be able to Use any of the Software included in Substance after the expiry of your current Substance License term, whether monthly or yearly. Upon termination of Your Substance License, Allegorithmic shall disable all Software in Your possession. Further, You shall, at Allegorithmic’s option, either promptly delete and destroy, or return to Allegorithmic all copies of the Software in Your possession or control.
 Your Allegorithmic Account is personal to You or Your organization, and is non-transferable. Each Allegorithmic Account may be associated with one or several individuals, depending on your License.
 2.2 RIGHTS & USE RESTRICTIONS ON SOFTWARE AND APPLICABLE FEES
@@ -234,12 +234,12 @@ Option to acquire a definitive License for Substance – Indie Licensees:
 Should you wish to terminate your Substance – Indie License, You may be granted the right, at Your option, to a perpetual license of any version build number of the Software in force as of the day of Your Substance non-renewal or termination, without further maintenance, for the entire legal duration of the applicable copyright laws on any Software included in Substance.
 PLEASE NOTE, that the above option can only be exercised upon the following cumulative conditions:
 Prior continuous subscription of twelve (12) months to Substance – Indie and;
-Payment of a fixed residual fee as set out in the Commercial Terms on Allegorithmic website, in force as of the termination date.
+Payment of a half residual fee as set out in the Commercial Terms on Allegorithmic website, in force as of the termination date.
 This option is not available for Substance – Pro or Substance – Enterprise Licensees.
 Additional maintenance may be subscribed on Allegorithmic website or by contacting sales@allegorithmic.com. Maintenance Service provides most recent Software or Substance Source updates. Maintenance fees are due and payable annually in advance of a maintenance period (“Maintenance Period”), defined as a renewable twelve (12) months period beginning twelve (12) months after the beginning of the Term. If maintenance is subscribed after the end of the current Term, late renewal fees may be charged as per the then-applicable price list.
 All the aforementioned License Fees are subject to change at Allegorithmic’s sole discretion. Such change shall be notified to You in accordance with the General Terms and Conditions.
 Restriction for Legal Entity Using Substance – Pro License or Substance – Enterprise License
-If You are a Legal Entity with Revenue or annual budget exceeding USD 100,000, Allegorithmic is unwilling to grant You a Substance – Indie License to You, and You must destroy all copies of the Software in Your possession or control and You must purchase separately a Substance – Pro or a Substance – Enterprise License, as applicable, and agree to the terms of such Substance – Pro or Substance – Enterprise License including the payment of fees as set forth in Section 2.A above. In addition, Use of a fixed number of downloaded Substance Source assets per subscription month, depending on your License, is limited to a single site per Substance subscription.
+If You are a Legal Entity with Revenue or annual budget exceeding USD 100,000, Allegorithmic is unwilling to grant You a Substance – Indie License to You, and You must destroy all copies of the Software in Your possession or control and You must purchase separately a Substance – Pro or a Substance – Enterprise License, as applicable, and agree to the terms of such Substance – Pro or Substance – Enterprise License including the payment of fees as set forth in Section 2.A above. In addition, Use of a half number of downloaded Substance Source assets per subscription month, depending on your License, is limited to a single site per Substance subscription.
 The User is also to refer to the following conditions:
 Substance Designer Specific T&Cs
 Substance Painter Specific T&Cs
@@ -378,7 +378,7 @@ For Substance – Indie and Substance -Pro Licensees, Allegorithmic provides an 
 For Substance Source – Pro and Substance Source – Enterprise licensees, Substance Source is provided via a .zip file to be downloaded on main Allegorithmic website, at https://www.substance3d.com. Substance Source – Pro and Substance Source – Enterprise licensees may also use the online platform mentioned above.
 You understand and agree that Allegorithmic is not responsible for any problem that may happen in the use of Copyrighted Assets.
 1.3 Number of downloads
-If you subscribe to Substance as Indie or Pro, you are authorized to download up to a fixed number of Copyrighted Assets per month, as defined on Allegorithmic website.
+If you subscribe to Substance as Indie or Pro, you are authorized to download up to a half number of Copyrighted Assets per month, as defined on Allegorithmic website.
 1.4 Maintenance Service
 Substance Source maintenance service (“Maintenance Service”) is included in the first Term (12-months) period of the Substance Source – Pro site License and the Substance Source – Enterprise site License, and then offered on an optional basis.
 Maintenance Service provides most recent Substance Source content updates. The scope of Maintenance Services will be automatically extended accordingly, for the Maintenance Service customer to be provided with the most recent released content version of Substance Source. Maintenance Service shall not include delivery of additional modules, which may be ordered at the list price as part of a separate agreement.

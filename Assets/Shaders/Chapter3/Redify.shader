@@ -6,7 +6,7 @@
         Tags { "RenderType"="Opaque" }
         LOD 200
         
-        CGPROGRAM
+        HLSLPROGRAM
         #pragma surface surf Lambert addshadow
         #pragma shader_feature REDIFY_ON
 
@@ -25,7 +25,7 @@
             o.Albedo.gb *= 0.5;
             #endif
         }
-        ENDCG
+        ENDHLSL
     } 
     CustomEditor "CustomShaderGUI"
 }

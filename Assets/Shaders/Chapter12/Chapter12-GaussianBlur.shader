@@ -6,7 +6,7 @@
 	SubShader {
 		CGINCLUDE
 		
-		#include "UnityCG.cginc"
+		#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 		
 		sampler2D _MainTex;  
 		half4 _MainTex_TexelSize;
@@ -19,7 +19,7 @@
 		  
 		v2f vertBlurVertical(appdata_img v) {
 			v2f o;
-			o.pos = UnityObjectToClipPos(v.vertex);
+			o.pos = TransformObjectToHClip(v.vertex);
 			
 			half2 uv = v.texcoord;
 			
@@ -34,7 +34,7 @@
 		
 		v2f vertBlurHorizontal(appdata_img v) {
 			v2f o;
-			o.pos = UnityObjectToClipPos(v.vertex);
+			o.pos = TransformObjectToHClip(v.vertex);
 			
 			half2 uv = v.texcoord;
 			
@@ -47,43 +47,43 @@
 			return o;
 		}
 		
-		fixed4 fragBlur(v2f i) : SV_Target {
+		half4 fragBlur(v2f i) : SV_Target {
 			float weight[3] = {0.4026, 0.2442, 0.0545};
 			
-			fixed3 sum = tex2D(_MainTex, i.uv[0]).rgb * weight[0];
+			half3 sum = tex2D(_MainTex, i.uv[0]).rgb * weight[0];
 			
 			for (int it = 1; it < 3; it++) {
 				sum += tex2D(_MainTex, i.uv[it*2-1]).rgb * weight[it];
 				sum += tex2D(_MainTex, i.uv[it*2]).rgb * weight[it];
 			}
 			
-			return fixed4(sum, 1.0);
+			return half4(sum, 1.0);
 		}
 		    
-		ENDCG
+		ENDHLSL
 		
 		ZTest Always Cull Off ZWrite Off
 		
 		Pass {
 			NAME "GAUSSIAN_BLUR_VERTICAL"
 			
-			CGPROGRAM
+			HLSLPROGRAM
 			  
 			#pragma vertex vertBlurVertical  
 			#pragma fragment fragBlur
 			  
-			ENDCG  
+			ENDHLSL  
 		}
 		
 		Pass {  
 			NAME "GAUSSIAN_BLUR_HORIZONTAL"
 			
-			CGPROGRAM  
+			HLSLPROGRAM  
 			
 			#pragma vertex vertBlurHorizontal  
 			#pragma fragment fragBlur
 			
-			ENDCG
+			ENDHLSL
 		}
 	} 
 	FallBack "Diffuse"

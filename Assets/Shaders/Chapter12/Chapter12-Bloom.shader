@@ -8,7 +8,7 @@
 	SubShader {
 		CGINCLUDE
 		
-		#include "UnityCG.cginc"
+		#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 		
 		sampler2D _MainTex;
 		half4 _MainTex_TexelSize;
@@ -24,20 +24,20 @@
 		v2f vertExtractBright(appdata_img v) {
 			v2f o;
 			
-			o.pos = UnityObjectToClipPos(v.vertex);
+			o.pos = TransformObjectToHClip(v.vertex);
 			
 			o.uv = v.texcoord;
 					 
 			return o;
 		}
 		
-		fixed luminance(fixed4 color) {
+		half luminance(half4 color) {
 			return  0.2125 * color.r + 0.7154 * color.g + 0.0721 * color.b; 
 		}
 		
-		fixed4 fragExtractBright(v2f i) : SV_Target {
-			fixed4 c = tex2D(_MainTex, i.uv);
-			fixed val = clamp(luminance(c) - _LuminanceThreshold, 0.0, 1.0);
+		half4 fragExtractBright(v2f i) : SV_Target {
+			half4 c = tex2D(_MainTex, i.uv);
+			half val = clamp(luminance(c) - _LuminanceThreshold, 0.0, 1.0);
 			
 			return c * val;
 		}
@@ -50,7 +50,7 @@
 		v2fBloom vertBloom(appdata_img v) {
 			v2fBloom o;
 			
-			o.pos = UnityObjectToClipPos (v.vertex);
+			o.pos = TransformObjectToHClip (v.vertex);
 			o.uv.xy = v.texcoord;		
 			o.uv.zw = v.texcoord;
 			
@@ -62,20 +62,20 @@
 			return o; 
 		}
 		
-		fixed4 fragBloom(v2fBloom i) : SV_Target {
+		half4 fragBloom(v2fBloom i) : SV_Target {
 			return tex2D(_MainTex, i.uv.xy) + tex2D(_Bloom, i.uv.zw);
 		} 
 		
-		ENDCG
+		ENDHLSL
 		
 		ZTest Always Cull Off ZWrite Off
 		
 		Pass {  
-			CGPROGRAM  
+			HLSLPROGRAM  
 			#pragma vertex vertExtractBright  
 			#pragma fragment fragExtractBright  
 			
-			ENDCG  
+			ENDHLSL  
 		}
 		
 		UsePass "Unity Shaders Book/Chapter 12/Gaussian Blur/GAUSSIAN_BLUR_VERTICAL"
@@ -83,11 +83,11 @@
 		UsePass "Unity Shaders Book/Chapter 12/Gaussian Blur/GAUSSIAN_BLUR_HORIZONTAL"
 		
 		Pass {  
-			CGPROGRAM  
+			HLSLPROGRAM  
 			#pragma vertex vertBloom  
 			#pragma fragment fragBloom  
 			
-			ENDCG  
+			ENDHLSL  
 		}
 	}
 	FallBack Off

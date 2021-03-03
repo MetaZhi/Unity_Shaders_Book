@@ -12,21 +12,21 @@ Shader "Unity Shaders Book/Chapter 11/Water" {
 		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "DisableBatching"="True"}
 		
 		Pass {
-			Tags { "LightMode"="ForwardBase" }
+			Tags { "LightMode"="UniversalForward" }
 			
 			ZWrite Off
 			Blend SrcAlpha OneMinusSrcAlpha
 			Cull Off
 			
-			CGPROGRAM  
+			HLSLPROGRAM  
 			#pragma vertex vert 
 			#pragma fragment frag
 			
-			#include "UnityCG.cginc" 
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
 			
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			fixed4 _Color;
+			half4 _Color;
 			float _Magnitude;
 			float _Frequency;
 			float _InvWaveLength;
@@ -48,7 +48,7 @@ Shader "Unity Shaders Book/Chapter 11/Water" {
 				float4 offset;
 				offset.yzw = float3(0.0, 0.0, 0.0);
 				offset.x = sin(_Frequency * _Time.y + v.vertex.x * _InvWaveLength + v.vertex.y * _InvWaveLength + v.vertex.z * _InvWaveLength) * _Magnitude;
-				o.pos = UnityObjectToClipPos(v.vertex + offset);
+				o.pos = TransformObjectToHClip(v.vertex + offset);
 				
 				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 				o.uv +=  float2(0.0, _Time.y * _Speed);
@@ -56,14 +56,14 @@ Shader "Unity Shaders Book/Chapter 11/Water" {
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-				fixed4 c = tex2D(_MainTex, i.uv);
+			half4 frag(v2f i) : SV_Target {
+				half4 c = tex2D(_MainTex, i.uv);
 				c.rgb *= _Color.rgb;
 				
 				return c;
 			} 
 			
-			ENDCG
+			ENDHLSL
 		}
 	}
 	FallBack "Transparent/VertexLit"

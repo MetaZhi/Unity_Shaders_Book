@@ -13,7 +13,7 @@
 	SubShader {
 		CGINCLUDE
 		
-		#include "UnityCG.cginc"
+		#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 		
 		float4x4 _FrustumCornersRay;
 		
@@ -21,7 +21,7 @@
 		half4 _MainTex_TexelSize;
 		sampler2D _CameraDepthTexture;
 		half _FogDensity;
-		fixed4 _FogColor;
+		half4 _FogColor;
 		float _FogStart;
 		float _FogEnd;
 		sampler2D _NoiseTex;
@@ -38,7 +38,7 @@
 		
 		v2f vert(appdata_img v) {
 			v2f o;
-			o.pos = UnityObjectToClipPos(v.vertex);
+			o.pos = TransformObjectToHClip(v.vertex);
 			
 			o.uv = v.texcoord;
 			o.uv_depth = v.texcoord;
@@ -68,7 +68,7 @@
 			return o;
 		}
 		
-		fixed4 frag(v2f i) : SV_Target {
+		half4 frag(v2f i) : SV_Target {
 			float linearDepth = LinearEyeDepth(SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv_depth));
 			float3 worldPos = _WorldSpaceCameraPos + linearDepth * i.interpolatedRay.xyz;
 			
@@ -78,21 +78,21 @@
 			float fogDensity = (_FogEnd - worldPos.y) / (_FogEnd - _FogStart); 
 			fogDensity = saturate(fogDensity * _FogDensity * (1 + noise));
 			
-			fixed4 finalColor = tex2D(_MainTex, i.uv);
+			half4 finalColor = tex2D(_MainTex, i.uv);
 			finalColor.rgb = lerp(finalColor.rgb, _FogColor.rgb, fogDensity);
 			
 			return finalColor;
 		}
 		
-		ENDCG
+		ENDHLSL
 		
 		Pass {          	
-			CGPROGRAM  
+			HLSLPROGRAM  
 			
 			#pragma vertex vert  
 			#pragma fragment frag  
 			  
-			ENDCG
+			ENDHLSL
 		}
 	} 
 	FallBack Off

@@ -10,14 +10,14 @@
 			ZWrite Off
 			Blend SrcAlpha OneMinusSrcAlpha
 			
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
 			#pragma fragment frag
 			
-			#include "UnityCG.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
-			fixed4 _Color;
+			half4 _Color;
 			sampler2D _MainTex;
 			half4 _MainTex_ST;
 			
@@ -33,18 +33,18 @@
 			
 			v2f vert(a2v v) {
 				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.pos = TransformObjectToHClip(v.vertex);
 				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-				fixed4 c = tex2D(_MainTex, i.uv);
+			half4 frag(v2f i) : SV_Target {
+				half4 c = tex2D(_MainTex, i.uv);
 				c.rgb = _Color.rgb;
 				return c;
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 	} 
 	FallBack "Transparent/VertexLit"

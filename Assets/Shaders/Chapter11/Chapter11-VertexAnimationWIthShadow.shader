@@ -12,19 +12,19 @@
 		Tags {"DisableBatching"="True"}
 		
 		Pass {
-			Tags { "LightMode"="ForwardBase" }
+			Tags { "LightMode"="UniversalForward" }
 			
 			Cull Off
 			
-			CGPROGRAM  
+			HLSLPROGRAM  
 			#pragma vertex vert 
 			#pragma fragment frag
 			
-			#include "UnityCG.cginc" 
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl" 
 			
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			fixed4 _Color;
+			half4 _Color;
 			float _Magnitude;
 			float _Frequency;
 			float _InvWaveLength;
@@ -46,7 +46,7 @@
 				float4 offset;
 				offset.yzw = float3(0.0, 0.0, 0.0);
 				offset.x = sin(_Frequency * _Time.y + v.vertex.x * _InvWaveLength + v.vertex.y * _InvWaveLength + v.vertex.z * _InvWaveLength) * _Magnitude;
-				o.pos = UnityObjectToClipPos(v.vertex + offset);
+				o.pos = TransformObjectToHClip(v.vertex + offset);
 				
 				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
 				o.uv +=  float2(0.0, _Time.y * _Speed);
@@ -54,28 +54,28 @@
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
-				fixed4 c = tex2D(_MainTex, i.uv);
+			half4 frag(v2f i) : SV_Target {
+				half4 c = tex2D(_MainTex, i.uv);
 				c.rgb *= _Color.rgb;
 				
 				return c;
 			} 
 			
-			ENDCG
+			ENDHLSL
 		}
 		
 		// Pass to render object as a shadow caster
 		Pass {
 			Tags { "LightMode" = "ShadowCaster" }
 			
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
 			#pragma fragment frag
 			
 			#pragma multi_compile_shadowcaster
 			
-			#include "UnityCG.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
 			float _Magnitude;
 			float _Frequency;
@@ -99,10 +99,10 @@
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
+			half4 frag(v2f i) : SV_Target {
 			    SHADOW_CASTER_FRAGMENT(i)
 			}
-			ENDCG
+			ENDHLSL
 		}
 	}
 	FallBack "VertexLit"

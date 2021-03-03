@@ -1,37 +1,48 @@
 ﻿Shader "Unity Shaders Book/Chapter 5/False Color" {
 	SubShader {
 		Pass {
-			CGPROGRAM
+			HLSLPROGRAM
 			
 			#pragma vertex vert
 			#pragma fragment frag
+
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
-			#include "UnityCG.cginc"
+			struct appdata_full {
+				float4 vertex : POSITION;
+				float4 tangent : TANGENT;
+				float3 normal : NORMAL;
+				float4 texcoord : TEXCOORD0;
+				float4 texcoord1 : TEXCOORD1;
+				float4 texcoord2 : TEXCOORD2;
+				float4 texcoord3 : TEXCOORD3;
+				half4 color : COLOR;
+			};
 			
 			struct v2f {
 				float4 pos : SV_POSITION;
-				fixed4 color : COLOR0;
+				half4 color : COLOR0;
 			};
 			
 			v2f vert(appdata_full v) {
 				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+				o.pos = TransformObjectToHClip(v.vertex.xyz);
 				
 				// Visualize normal
-				o.color = fixed4(v.normal * 0.5 + fixed3(0.5, 0.5, 0.5), 1.0);
+				o.color = half4(v.normal * 0.5 + half3(0.5, 0.5, 0.5), 1.0);
 				
 				// Visualize tangent
-				o.color = fixed4(v.tangent.xyz * 0.5 + fixed3(0.5, 0.5, 0.5), 1.0);
+				o.color = half4(v.tangent.xyz * 0.5 + half3(0.5, 0.5, 0.5), 1.0);
 				
 				// Visualize binormal
-				fixed3 binormal = cross(v.normal, v.tangent.xyz) * v.tangent.w;
-				o.color = fixed4(binormal * 0.5 + fixed3(0.5, 0.5, 0.5), 1.0);
+				half3 binormal = cross(v.normal, v.tangent.xyz) * v.tangent.w;
+				o.color = half4(binormal * 0.5 + half3(0.5, 0.5, 0.5), 1.0);
 				
 				// Visualize the first set texcoord
-				o.color = fixed4(v.texcoord.xy, 0.0, 1.0);
+				o.color = half4(v.texcoord.xy, 0.0, 1.0);
 				
 				// Visualize the second set texcoord
-				o.color = fixed4(v.texcoord1.xy, 0.0, 1.0);
+				o.color = half4(v.texcoord1.xy, 0.0, 1.0);
 				
 				// Visualize fractional part of the first set texcoord
 				o.color = frac(v.texcoord);
@@ -53,11 +64,11 @@
 				return o;
 			}
 			
-			fixed4 frag(v2f i) : SV_Target {
+			half4 frag(v2f i) : SV_Target {
 				return i.color;
 			}
 			
-			ENDCG
+			ENDHLSL
 		}
 	}
 }

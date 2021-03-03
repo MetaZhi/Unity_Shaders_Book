@@ -4,9 +4,9 @@
 		_BlurSize ("Blur Size", Float) = 1.0
 	}
 	SubShader {
-		CGINCLUDE
+		HLSLINCLUDE
 		
-		#include "UnityCG.cginc"
+		#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 		
 		sampler2D _MainTex;
 		half4 _MainTex_TexelSize;
@@ -23,7 +23,7 @@
 		
 		v2f vert(appdata_img v) {
 			v2f o;
-			o.pos = UnityObjectToClipPos(v.vertex);
+			o.pos = TransformObjectToHClip(v.vertex);
 			
 			o.uv = v.texcoord;
 			o.uv_depth = v.texcoord;
@@ -36,7 +36,7 @@
 			return o;
 		}
 		
-		fixed4 frag(v2f i) : SV_Target {
+		half4 frag(v2f i) : SV_Target {
 			// Get the depth buffer value at this pixel.
 			float d = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv_depth);
 			#if defined(UNITY_REVERSED_Z)
@@ -68,20 +68,20 @@
 			}
 			c /= 3;
 			
-			return fixed4(c.rgb, 1.0);
+			return half4(c.rgb, 1.0);
 		}
 		
-		ENDCG
+		ENDHLSL	
 		
 		Pass {      
 			ZTest Always Cull Off ZWrite Off
 			    	
-			CGPROGRAM  
+			HLSLPROGRAM  
 			
 			#pragma vertex vert  
 			#pragma fragment frag  
 			  
-			ENDCG  
+			ENDHLSL  
 		}
 	} 
 	FallBack Off
