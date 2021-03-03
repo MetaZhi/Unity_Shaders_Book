@@ -16,11 +16,6 @@ public class PostEffectsBase : MonoBehaviour {
 
 	// Called in CheckResources to check support on this platform
 	protected bool CheckSupport() {
-		if (SystemInfo.supportsImageEffects == false) {
-			Debug.LogWarning("This platform does not support image effects.");
-			return false;
-		}
-		
 		return true;
 	}
 
