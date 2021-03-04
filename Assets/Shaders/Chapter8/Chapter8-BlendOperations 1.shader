@@ -53,7 +53,7 @@
 			half _AlphaScale;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 				float4 texcoord : TEXCOORD0;
 			};

@@ -29,7 +29,7 @@
 			samplerCUBE _Cubemap;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 			};
 			
@@ -62,10 +62,10 @@
 			
 			half4 frag(v2f i) : SV_Target {
 				half3 worldNormal = normalize(i.worldNormal);
-				half3 worldLightDir = normalize(_MainLightPosition.xyz -(i.worldPos));
+				half3 worldLightDir = _MainLightPosition.xyz;
 				half3 worldViewDir = normalize(i.worldViewDir);
 								
-				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+				half3 ambient = _GlossyEnvironmentColor;
 				
 				half3 diffuse = _MainLightColor.rgb * _Color.rgb * max(0, dot(worldNormal, worldLightDir));
 				

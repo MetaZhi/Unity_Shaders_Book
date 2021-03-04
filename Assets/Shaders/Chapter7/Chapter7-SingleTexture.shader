@@ -15,6 +15,7 @@
 			#pragma fragment frag
 
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			
 			half4 _Color;
 			sampler2D _MainTex;
@@ -23,7 +24,7 @@
 			float _Gloss;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 				float4 texcoord : TEXCOORD0;
 			};
@@ -52,12 +53,12 @@
 			
 			half4 frag(v2f i) : SV_Target {
 				half3 worldNormal = normalize(i.worldNormal);
-				half3 worldLightDir = normalize(_MainLightPosition.xyz - (i.worldPos));
+				half3 worldLightDir = _MainLightPosition.xyz;
 				
 				// Use the texture to sample the diffuse color
 				half3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;
 				
-				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				half3 ambient = _GlossyEnvironmentColor * albedo;
 				
 				half3 diffuse = _MainLightColor.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
 				

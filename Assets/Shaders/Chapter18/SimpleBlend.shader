@@ -22,7 +22,7 @@
 			half4 _MainTex_ST;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				half4 texcoord : TEXCOORD0;
 			};
 			

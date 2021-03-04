@@ -27,7 +27,7 @@
 			half4 _OutlineColor;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 			}; 
 			
@@ -79,7 +79,7 @@
 			half _SpecularScale;
 		
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 				float4 texcoord : TEXCOORD0;
 				float4 tangent : TANGENT;
@@ -108,14 +108,14 @@
 			
 			float4 frag(v2f i) : SV_Target { 
 				half3 worldNormal = normalize(i.worldNormal);
-				half3 worldLightDir = normalize(_MainLightPosition.xyz -(i.worldPos));
+				half3 worldLightDir = _MainLightPosition.xyz;
 				half3 worldViewDir = normalize(GetCameraPositionWS() - (i.worldPos));
 				half3 worldHalfDir = normalize(worldLightDir + worldViewDir);
 				
 				half4 c = tex2D (_MainTex, i.uv);
 				half3 albedo = c.rgb * _Color.rgb;
 				
-				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				half3 ambient = _GlossyEnvironmentColor * albedo;
 				
 				UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
 				

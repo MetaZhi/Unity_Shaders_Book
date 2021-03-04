@@ -16,7 +16,7 @@
 			half4 _Diffuse;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 			};
 			
@@ -38,7 +38,7 @@
 			
 			half4 frag(v2f i) : SV_Target {
 				// Get ambient term
-				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+				half3 ambient = _GlossyEnvironmentColor;
 				
 				// Get the normal in world space
 				half3 worldNormal = normalize(i.worldNormal);

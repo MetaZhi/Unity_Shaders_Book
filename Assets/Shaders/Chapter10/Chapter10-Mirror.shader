@@ -16,7 +16,7 @@
 			sampler2D _MainTex;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 texcoord : TEXCOORD0;
 			};
 			

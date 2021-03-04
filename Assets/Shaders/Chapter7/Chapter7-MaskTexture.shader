@@ -31,7 +31,7 @@
 			float _Gloss;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 				float4 tangent : TANGENT;
 				float4 texcoord : TEXCOORD0;
@@ -50,9 +50,10 @@
 				
 				o.uv.xy = v.texcoord.xy * _MainTex_ST.xy + _MainTex_ST.zw;
 				
-				TANGENT_SPACE_ROTATION;
-				o.lightDir = mul(rotation, TransformWorldToObject(_MainLightPosition.xyz)-(v.vertex)).xyz;
-				o.viewDir = mul(rotation, TransformWorldToObject(GetCameraPositionWS()) - (v.vertex)).xyz;
+				float3 binormal = cross( normalize(v.normal), normalize(v.tangent.xyz) ) * v.tangent.w; 
+				float3x3 rotation = float3x3( v.tangent.xyz, binormal, v.normal );
+				o.lightDir = mul(rotation, TransformWorldToObjectDir(_MainLightPosition.xyz));
+				o.viewDir = mul(rotation, TransformWorldToObjectDir(GetCameraPositionWS())-v.vertex);
 				
 				return o;
 			}
@@ -67,7 +68,7 @@
 
 				half3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;
 				
-				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				half3 ambient = _GlossyEnvironmentColor * albedo;
 				
 				half3 diffuse = _MainLightColor.rgb * albedo * max(0, dot(tangentNormal, tangentLightDir));
 				

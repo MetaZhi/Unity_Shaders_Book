@@ -33,7 +33,7 @@ Shader "Unity Shaders Book/Chapter 11/Water" {
 			float _Speed;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float4 texcoord : TEXCOORD0;
 			};
 			

@@ -26,7 +26,7 @@
 			float _Gloss;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 			};
 			
@@ -51,7 +51,7 @@
 				half3 worldNormal = normalize(i.worldNormal);
 				half3 worldLightDir = normalize(_MainLightPosition.xyz);
 				
-				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+				half3 ambient = _GlossyEnvironmentColor;
 				
 			 	half3 diffuse = _MainLightColor.rgb * _Diffuse.rgb * max(0, dot(worldNormal, worldLightDir));
 
@@ -69,7 +69,7 @@
 	
 		Pass {
 			// Pass for other pixel lights
-			Tags { "LightMode"="ForwardAdd" }
+			Tags { "LightMode"="SRPDefaultUnlit" }
 			
 			Blend One One
 		
@@ -82,14 +82,14 @@
 			#pragma fragment frag
 			
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-			#include "AutoLight.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 			
 			half4 _Diffuse;
 			half4 _Specular;
 			float _Gloss;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 			};
 			

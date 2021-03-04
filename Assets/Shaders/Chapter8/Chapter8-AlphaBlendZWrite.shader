@@ -8,13 +8,16 @@
 		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
 		
 		// Extra pass that renders to depth buffer only
+		// LightMode order: UniversalForward > LightweightForward > SRPDefaultUnlit
 		Pass {
+			Tags { "LightMode"="UniversalForward" }
+
 			ZWrite On
 			ColorMask 0
 		}
 		
 		Pass {
-			Tags { "LightMode"="UniversalForward" }
+			Tags { "LightMode"="SRPDefaultUnlit" }
 			
 			ZWrite Off
 			Blend SrcAlpha OneMinusSrcAlpha
@@ -32,7 +35,7 @@
 			half _AlphaScale;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 				float4 texcoord : TEXCOORD0;
 			};
@@ -59,13 +62,13 @@
 			
 			half4 frag(v2f i) : SV_Target {
 				half3 worldNormal = normalize(i.worldNormal);
-				half3 worldLightDir = normalize(_MainLightPosition.xyz -(i.worldPos));
+				half3 worldLightDir = _MainLightPosition.xyz;
 				
 				half4 texColor = tex2D(_MainTex, i.uv);
 				
 				half3 albedo = texColor.rgb * _Color.rgb;
 				
-				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				half3 ambient = _GlossyEnvironmentColor * albedo;
 				
 				half3 diffuse = _MainLightColor.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
 				

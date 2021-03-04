@@ -39,7 +39,7 @@
 			float4 _BurnMap_ST;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 				float4 tangent : TANGENT;
 				float4 texcoord : TEXCOORD0;
@@ -83,7 +83,7 @@
 				
 				half3 albedo = tex2D(_MainTex, i.uvMainTex).rgb;
 				
-				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				half3 ambient = _GlossyEnvironmentColor * albedo;
 				
 				half3 diffuse = _MainLightColor.rgb * albedo * max(0, dot(tangentNormal, tangentLightDir));
 

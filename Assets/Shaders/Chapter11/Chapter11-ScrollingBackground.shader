@@ -28,7 +28,7 @@
 			float _Multiplier;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float4 texcoord : TEXCOORD0;
 			};
 			

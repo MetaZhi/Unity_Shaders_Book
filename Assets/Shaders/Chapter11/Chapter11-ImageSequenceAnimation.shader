@@ -30,7 +30,7 @@
 			float _Speed;
 			  
 			struct a2v {  
-			    float4 vertex : POSITION; 
+			    float3 vertex : POSITION; 
 			    float2 texcoord : TEXCOORD0;
 			};  
 			

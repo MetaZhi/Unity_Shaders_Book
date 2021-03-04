@@ -45,7 +45,7 @@ Shader "Unity Shaders Book/Chapter 14/Hatching" {
 			sampler2D _Hatch5;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float4 tangent : TANGENT; 
 				float3 normal : NORMAL; 
 				float2 texcoord : TEXCOORD0; 

@@ -22,7 +22,7 @@
 			float _Gloss;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 			};
 			
@@ -63,7 +63,7 @@
 				half3 specular = _MainLightColor.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
 
 				// 获取环境光方式多种，且得到效果不一
-                //half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+                //half3 ambient = _GlossyEnvironmentColor;
                 //half3 ambient = (glstate_lightmodel_ambient).xyz;
                 //half3 ambient = i.vertexSH.xyz;
                 //half3 ambient = SampleSH(worldNormal);

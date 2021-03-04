@@ -9,7 +9,7 @@
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			
 			struct appdata_full {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float4 tangent : TANGENT;
 				float3 normal : NORMAL;
 				float4 texcoord : TEXCOORD0;

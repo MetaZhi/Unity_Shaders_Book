@@ -23,7 +23,7 @@
 			float _Gloss;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 				float4 texcoord : TEXCOORD0;
 			};
@@ -50,9 +50,9 @@
 			
 			half4 frag(v2f i) : SV_Target {
 				half3 worldNormal = normalize(i.worldNormal);
-				half3 worldLightDir = normalize(_MainLightPosition.xyz -(i.worldPos));
+				half3 worldLightDir = _MainLightPosition.xyz;
 				
-				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+				half3 ambient = _GlossyEnvironmentColor;
 				
 				// Use the texture to sample the diffuse color
 				half halfLambert  = 0.5 * dot(worldNormal, worldLightDir) + 0.5;

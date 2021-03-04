@@ -21,14 +21,15 @@
 			
 			// Need these files to get built-in macros
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-			#include "AutoLight.cginc"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
 			
 			half4 _Diffuse;
 			half4 _Specular;
 			float _Gloss;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 			};
 			
@@ -36,7 +37,7 @@
 				float4 pos : SV_POSITION;
 				float3 worldNormal : TEXCOORD0;
 				float3 worldPos : TEXCOORD1;
-				SHADOW_COORDS(2)
+				float4 shadowCoord : TEXCOORD2;
 			};
 			
 			v2f vert(a2v v) {
@@ -48,7 +49,7 @@
 			 	o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
 			 	
 			 	// Pass shadow coordinates to pixel shader
-			 	TRANSFER_SHADOW(o);
+			 	o.shadowCoord = TransformWorldToShadowCoord(o.worldPos);
 			 	
 			 	return o;
 			}
@@ -57,7 +58,7 @@
 				half3 worldNormal = normalize(i.worldNormal);
 				half3 worldLightDir = normalize(_MainLightPosition.xyz);
 				
-				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+				half3 ambient = _GlossyEnvironmentColor;
 
 			 	half3 diffuse = _MainLightColor.rgb * _Diffuse.rgb * max(0, dot(worldNormal, worldLightDir));
 
@@ -99,7 +100,7 @@
 			float _Gloss;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 			};
 			

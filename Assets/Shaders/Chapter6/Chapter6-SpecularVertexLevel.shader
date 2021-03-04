@@ -20,7 +20,7 @@
 			float _Gloss;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 			};
 			
@@ -35,7 +35,7 @@
 				o.pos = TransformObjectToHClip(v.vertex);
 				
 				// Get ambient term
-				half3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+				half3 ambient = _GlossyEnvironmentColor;
 				
 				// Transform the normal from object space to world space
 				half3 worldNormal = normalize(mul(v.normal, (float3x3)unity_WorldToObject));

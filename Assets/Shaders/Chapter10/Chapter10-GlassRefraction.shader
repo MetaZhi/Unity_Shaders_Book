@@ -33,7 +33,7 @@
 			float4 _RefractionTex_TexelSize;
 			
 			struct a2v {
-				float4 vertex : POSITION;
+				float3 vertex : POSITION;
 				float3 normal : NORMAL;
 				float4 tangent : TANGENT; 
 				float2 texcoord: TEXCOORD0;
